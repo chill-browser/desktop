@@ -3,8 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-pref("startup.homepage_override_url", "https://chill-browser.github.io/www/welcome.html");
-pref("startup.homepage_welcome_url", "https://chill-browser.github.io/www/welcome.html");
+pref("startup.homepage_override_url", "https://chill-browser.vercel.app/welcome");
+pref("startup.homepage_welcome_url", "https://chill-browser.vercel.app/welcome");
 pref("startup.homepage_welcome_url.additional", "");
 
 // Give the user x seconds to react before showing the big UI. default=192 hours

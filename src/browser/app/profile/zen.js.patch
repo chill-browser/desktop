@@ -11,7 +11,7 @@ diff --git a/browser/app/profile/zen.js b/browser/app/profile/zen.js
 -pref("browser.startup.page", 3);
 +pref("browser.startup.page", 1);
 +
-+pref("browser.startup.homepage", "https://chill-browser.github.io/www/welcome.html");
++pref("browser.startup.homepage", "https://chill-browser.vercel.app/welcome");
 @@ -620 +621 @@
 -pref("zen.welcome-screen.seen", false);
 +pref("zen.welcome-screen.seen", true);
