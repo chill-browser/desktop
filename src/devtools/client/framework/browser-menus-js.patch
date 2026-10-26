@@ -1,0 +1,81 @@
+diff --git a/devtools/client/framework/browser-menus.js b/devtools/client/framework/browser-menus.js
+index 77748f1caf..957dc9c229 100644
+--- a/devtools/client/framework/browser-menus.js
++++ b/devtools/client/framework/browser-menus.js
+@@ -98,9 +98,25 @@ function createMenuItem({
+  * @param {HTMLDocument} doc
+  *        The document to which the tool menu item is to be added.
+  */
++const CHROME_TOOLS = {
++  inspector: "elements",
++  webconsole: "console",
++  jsdebugger: "sources",
++  netmonitor: "network",
++  storage: "resources",
++};
++
+ function createToolMenuElements(toolDefinition, doc) {
+   const id = toolDefinition.id;
+   const menuId = "menuitem_" + id;
++  const firefoxDevTools = Services.prefs.getBoolPref(
++    "chill.devtools.firefox.enabled",
++    false
++  );
++
++  if (!firefoxDevTools && !CHROME_TOOLS[id]) {
++    return null;
++  }
+
+   // Prevent multiple entries for the same tool.
+   if (doc.getElementById(menuId)) {
+@@ -110,6 +126,13 @@ function createToolMenuElements(toolDefinition, doc) {
+   const oncommand = async function (id, event) {
+     try {
+       const window = event.target.ownerDocument.defaultView;
++      if (!firefoxDevTools) {
++        const { ChromeDevToolsBridge } = ChromeUtils.importESModule(
++          "resource:///modules/zen/ChromeDevToolsBridge.mjs"
++        );
++        await ChromeDevToolsBridge.open(window, { panel: CHROME_TOOLS[id] });
++        return;
++      }
+       await gDevToolsBrowser.selectToolCommand(window, id, ChromeUtils.now());
+       sendEntryPointTelemetry(window);
+     } catch (e) {
+@@ -246,7 +269,15 @@ function addTopLevelItems(doc) {
+   const menuItems = doc.createDocumentFragment();
+
+   const { menuitems } = require("resource://devtools/client/menus.js");
++  const firefoxDevTools = Services.prefs.getBoolPref(
++    "chill.devtools.firefox.enabled",
++    false
++  );
++  const chromeTopLevel = new Set(["menu_devToolbox", "extensionsForDevelopers"]);
+   for (const item of menuitems) {
++    if (!firefoxDevTools && !chromeTopLevel.has(item.id)) {
++      continue;
++    }
+     if (item.separator) {
+       const separator = doc.createXULElement("menuseparator");
+       separator.id = item.id;
+@@ -263,7 +294,19 @@ function addTopLevelItems(doc) {
+         isCheckbox: item.checkbox,
+         appMenuL10nId: item.appMenuL10nId,
+       });
+-      menuitem.addEventListener("command", item.oncommand);
++      if (!firefoxDevTools && item.id === "menu_devToolbox") {
++        menuitem.addEventListener("command", event => {
++          const window = event.target.ownerDocument.defaultView;
++          ChromeUtils.importESModule(
++            "resource:///modules/zen/ChromeDevToolsBridge.mjs"
++          ).ChromeDevToolsBridge.open(window, {
++            panel: "elements",
++            toggle: true,
++          });
++        });
++      } else {
++        menuitem.addEventListener("command", item.oncommand);
++      }
+       menuItems.appendChild(menuitem);
+
+       if (item.keyId) {

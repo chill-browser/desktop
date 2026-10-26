@@ -1,0 +1,45 @@
+diff --git a/devtools/startup/DevToolsStartup.sys.mjs b/devtools/startup/DevToolsStartup.sys.mjs
+index 954be464f2..4fea065c18 100644
+--- a/devtools/startup/DevToolsStartup.sys.mjs
++++ b/devtools/startup/DevToolsStartup.sys.mjs
+@@ -965,6 +965,9 @@ export class DevToolsStartup {
+     // account (see bug 832984).
+     const mainKeyset = doc.getElementById("mainKeyset");
+     mainKeyset.parentNode.insertBefore(keyset, mainKeyset);
++    mainKeyset.documentGlobal.setTimeout(() => {
++      window.dispatchEvent(new window.Event("zen-devtools-keyset-added"));
++    }, 0);
+   }
+
+   /**
+@@ -1056,6 +1059,30 @@ export class DevToolsStartup {
+
+   async onKey(window, key) {
+     try {
++      if (!Services.prefs.getBoolPref("chill.devtools.firefox.enabled", false)) {
++        const panelByTool = {
++          inspector: "elements",
++          webconsole: "console",
++          jsdebugger: "sources",
++          netmonitor: "network",
++          storage: "application",
++        };
++        const panel =
++          panelByTool[key.toolId] ||
++          (key.id === "inspectorMac" ? "elements" : null) ||
++          (key.id?.startsWith("toggleToolbox") ? "elements" : null);
++        if (panel) {
++          const { ChromeDevToolsBridge } = ChromeUtils.importESModule(
++            "resource:///modules/zen/ChromeDevToolsBridge.mjs"
++          );
++          await ChromeDevToolsBridge.open(window, {
++            panel,
++            toggle: key.id?.startsWith("toggleToolbox"),
++          });
++        }
++        return;
++      }
++
+       // The profiler doesn't care if DevTools is loaded, so provide a quick check
+       // first to bail out of checking if DevTools is available.
+       switch (key.id) {

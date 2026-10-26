@@ -1,0 +1,57 @@
+{
+  "name": "Chill Browser",
+  "vendor": "Chill Browser",
+  "appId": "chill",
+  "binaryName": "chill",
+  "version": {
+    "product": "firefox",
+    "version": "158.0.1",
+    "candidate": "158.0.1",
+    "candidateBuild": 1
+  },
+  "buildOptions": {
+    "generateBranding": true
+  },
+  "addons": {},
+  "brands": {
+    "release": {
+      "backgroundColor": "#0B1220",
+      "brandShorterName": "Chill",
+      "brandShortName": "Chill",
+      "brandFullName": "Chill Browser",
+      "release": {
+        "displayVersion": "1.0.0",
+        "github": {
+          "repo": "chill-browser/desktop"
+        },
+        "archives": {
+          "windows": "windows.mar",
+          "macos-aarch64": "macos-aarch64.mar",
+          "linux": "linux.mar",
+          "macos-x64": "macos-x64.mar",
+          "windows-arm64": "windows-arm64.mar",
+          "linux-aarch64": "linux-aarch64.mar"
+        }
+      }
+    },
+    "twilight": {
+      "backgroundColor": "#0B1220",
+      "brandShorterName": "Chill",
+      "brandShortName": "Chill Twilight",
+      "brandFullName": "Chill Browser Twilight",
+      "release": {
+        "displayVersion": "1.0.0t",
+        "github": {
+          "repo": "chill-browser/desktop"
+        }
+      }
+    }
+  },
+  "license": {
+    "ignoredFiles": [
+      ".*\\.json"
+    ],
+    "licenseType": "MPL-2.0"
+  },
+  "updateHostname": "updates.chill-browser.app"
+}

@@ -1,0 +1,59 @@
+diff --git a/browser/base/content/nsContextMenu.sys.mjs b/browser/base/content/nsContextMenu.sys.mjs
+index 51bf7b7fc5..bc146ed061 100644
+--- a/browser/base/content/nsContextMenu.sys.mjs
++++ b/browser/base/content/nsContextMenu.sys.mjs
+@@ -409,6 +409,9 @@ export class nsContextMenu {
+     this.initTextFragmentItems();
+     this.pdfjsContextMenu.initItems();
+
++    this.showItem("context-zenSplitLink", this.onLink && !this.onMailtoLink && !this.onTelLink);
++    this.showItem("context-zenOpenLinkInGlance", this.onLink && !this.onMailtoLink && !this.onTelLink);
++
+     this.showHideSeparators(aXulMenu);
+     if (!aXulMenu.showHideSeparators) {
+       // Set the showHideSeparators function on the menu itself so that
+@@ -883,7 +886,11 @@ export class nsContextMenu {
+     this.showItem("context-viewsource", showViewSource);
+     this.showItem("context-inspect", showInspect);
+
+-    this.showItem("context-inspect-a11y", showInspectA11Y);
++    this.showItem(
++      "context-inspect-a11y",
++      showInspectA11Y &&
++        Services.prefs.getBoolPref("chill.devtools.firefox.enabled", false)
++    );
+
+     // View video depends on not having a standalone video.
+     this.showItem(
+@@ -1487,6 +1494,15 @@ export class nsContextMenu {
+   }
+
+   inspectNode() {
++    if (!Services.prefs.getBoolPref("chill.devtools.firefox.enabled", false)) {
++      ChromeUtils.importESModule(
++        "resource:///modules/zen/ChromeDevToolsBridge.mjs"
++      ).ChromeDevToolsBridge.open(this.window, {
++        panel: "elements",
++        inspectNode: this.targetIdentifier,
++      });
++      return undefined;
++    }
+     return lazy.DevToolsShim.inspectNode(
+       this.window.gBrowser.selectedTab,
+       this.targetIdentifier
+@@ -1494,6 +1510,15 @@ export class nsContextMenu {
+   }
+
+   inspectA11Y() {
++    if (!Services.prefs.getBoolPref("chill.devtools.firefox.enabled", false)) {
++      ChromeUtils.importESModule(
++        "resource:///modules/zen/ChromeDevToolsBridge.mjs"
++      ).ChromeDevToolsBridge.open(this.window, {
++        panel: "elements",
++        inspectNode: this.targetIdentifier,
++      });
++      return undefined;
++    }
+     return lazy.DevToolsShim.inspectA11Y(
+       this.window.gBrowser.selectedTab,
+       this.targetIdentifier

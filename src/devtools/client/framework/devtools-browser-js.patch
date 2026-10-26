@@ -1,0 +1,14 @@
+diff --git a/devtools/client/framework/devtools-browser.js b/devtools/client/framework/devtools-browser.js
+index 284e7ebdc3..7d7fc4c5af 100644
+--- a/devtools/client/framework/devtools-browser.js
++++ b/devtools/client/framework/devtools-browser.js
+@@ -108,6 +108,9 @@ var gDevToolsBrowser = (exports.gDevToolsBrowser = {
+
+     function toggleMenuItem(id, isEnabled) {
+       const cmd = doc.getElementById(id);
++      if (!cmd) {
++        return;
++      }
+       cmd.hidden = !isEnabled;
+       if (isEnabled) {
+         cmd.removeAttribute("disabled");
