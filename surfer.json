@@ -20,7 +20,7 @@
       "brandShortName": "Chill",
       "brandFullName": "Chill Browser",
       "release": {
-        "displayVersion": "1.0.0",
+        "displayVersion": "1.0.1",
         "github": {
           "repo": "chill-browser/desktop"
         },
