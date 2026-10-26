@@ -11,7 +11,7 @@
   </p>
 </div>
 
-![Chill Browser with Chrome DevTools docked](docs/assets/g6-docked.png)
+![Chill Browser website first screen](docs/assets/chill-website.png)
 
 Chill Browser is built on Zen 1.23.4b. It keeps vertical tabs, workspaces, split view and compact mode, and adds the full Chrome DevTools frontend docked into the browser window.
 
