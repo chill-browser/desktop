@@ -1,52 +1,40 @@
-<!--
-   - This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
-   -->
-<!-- TODO: Get a job -->
-<img src="./docs/assets/zen-dark.svg" width="100px" align="left">
-
-### `Zen Browser`
-
-[![Downloads](https://img.shields.io/github/downloads/zen-browser/desktop/total.svg)](https://github.com/zen-browser/desktop/releases)
-[![Crowdin](https://badges.crowdin.net/zen-browser/localized.svg)](https://crowdin.com/project/zen-browser)
-[![Zen Release builds](https://github.com/zen-browser/desktop/actions/workflows/build.yml/badge.svg?branch=stable)](https://github.com/zen-browser/desktop/actions/workflows/build.yml)
-
-Zen is a firefox-based browser with the aim of pushing your productivity to a new level!
-
-<div flex="true">
-  <a href="https://zen-browser.app/download">
-    Download
-  </a>
-  •
-  <a href="https://zen-browser.app">
-    Website
-  </a>
-  •
-  <a href="https://docs.zen-browser.app">
-    Documentation
-  </a>
-  •
-  <a href="https://zen-browser.app/release-notes/latest">
-    Release Notes
-  </a>
+<div align="center">
+  <img src="./configs/branding/release/logo512.png" width="96" height="96" alt="Chill Browser" />
+  <h1>Chill Browser</h1>
+  <p><strong>A calmer browser, with Chrome DevTools inside.</strong></p>
+  <p>
+    <a href="https://github.com/chill-browser/desktop/releases/latest">Download</a>
+    ·
+    <a href="https://github.com/chill-browser/www">Website</a>
+    ·
+    <a href="https://zen-browser.app">Built on Zen</a>
+  </p>
 </div>
 
-### Firefox Versions
+![Chill Browser with Chrome DevTools docked](docs/assets/g6-docked.png)
 
-- [`Release`](https://zen-browser.app/download) - Is currently built using Firefox version `158.0`!
-- [`Twilight`](https://zen-browser.app/download?twilight) - Is currently built using Firefox version `RC 158.0`!
+Chill Browser is built on Zen 1.23.4b. It keeps vertical tabs, workspaces, split view and compact mode, and adds the full Chrome DevTools frontend docked into the browser window.
 
-### Contributing
+## Download
 
-If you'd like to report a bug, please do so on our [GitHub Issues page](https://github.com/zen-browser/desktop/issues/) and for feature requests, you can use [GitHub Discussions](https://github.com/zen-browser/desktop/discussions).
+- **Linux x86_64** — available now, with the DevTools frontend and launcher included.
+- **macOS** — native build required; not in the current release.
+- **Windows** — native/cross build required; not in the current release.
 
-Zen is an open-source project, and we welcome contributions from the community! Please take a look at the [contribution guidelines](./docs/contribute.md) before getting started!
+The website selects the right asset from the latest release: [chill-browser/www](https://github.com/chill-browser/www).
 
-#### Partners
+## Build
 
-Thanks to all the partners of Zen for their support and contributions:
+```bash
+npm ci
+npm run download
+npm run import
+npm run build
+npm run package
+```
 
-<a href="https://blacksmith.sh">
-  <img src="./docs/assets/blacksmith-yellow.png" width="350px"/>
-</a>
+The browser is based on Zen and Firefox. The Chrome DevTools frontend is served locally by `scripts/serve_chrome_devtools.mjs`.
+
+## License
+
+MPL-2.0. Based on Zen Browser and the Chrome DevTools frontend.
