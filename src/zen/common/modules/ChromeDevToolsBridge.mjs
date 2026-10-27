@@ -815,6 +815,26 @@ class Bridge {
       case "CSS.getComputedStyleForNode":
         return this.#getComputedStyle(params);
 
+      case "CSS.getLayersForNode":
+        return {
+          rootLayer: {
+            layerId: "chill-root-layer",
+            name: "",
+            text: "",
+            subLayers: [],
+          },
+        };
+
+      case "CSS.getAnimatedStylesForNode":
+        return {
+          animationStyles: [],
+          transitionsStyle: null,
+          inherited: [],
+        };
+
+      case "CSS.getLocationForSelector":
+        return {};
+
       case "CSS.getMatchedStylesForNode":
         return this.#getMatchedStyles(params);
 
@@ -4286,25 +4306,38 @@ class Bridge {
     let inlineStyle = null;
     for (const entry of entries) {
       const rule = entry.rule;
+      if (entry.inherited) {
+        const inheritedEntry = {
+          matchedCSSRules: [],
+          inlineStyle: null,
+          pseudoElements: [],
+        };
+        if (rule.type === 100) {
+          inheritedEntry.inlineStyle = this.#cssStyle(rule);
+        } else {
+          inheritedEntry.matchedCSSRules.push({
+            rule: this.#cssRule(rule, node),
+            matchingSelectors: entry.matchedSelectorIndexes || [],
+          });
+        }
+        inherited.push(inheritedEntry);
+        continue;
+      }
       if (rule.type === 100) {
         inlineStyle = this.#cssStyle(rule);
         continue;
       }
-      const item = {
+      matchedCSSRules.push({
         rule: this.#cssRule(rule, node),
         matchingSelectors: entry.matchedSelectorIndexes || [],
-      };
-      if (entry.inherited) {
-        inherited.push(item);
-      } else {
-        matchedCSSRules.push(item);
-      }
+      });
     }
     return {
       matchedCSSRules,
       inherited,
       inlineStyle,
       attributesStyle: null,
+      pseudoElements: [],
     };
   }
 
