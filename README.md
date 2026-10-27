@@ -18,7 +18,7 @@ Chill Browser is built on Zen 1.23.4b. It keeps vertical tabs, workspaces, split
 ## Download
 
 - **Linux x86_64** — available now, with the DevTools frontend and launcher included.
-- **macOS Apple Silicon** — available now as an unsigned DMG, with the DevTools frontend bundled.
+- **macOS Apple Silicon** — available now as an unsigned DMG, with the DevTools frontend bundled and a native launcher.
 - **Windows** — native/cross build required; not in the current release.
 
 The website selects the right asset from the latest release: [chill-browser/www](https://github.com/chill-browser/www).
