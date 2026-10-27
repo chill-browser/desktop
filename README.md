@@ -18,7 +18,7 @@ Chill Browser is built on Zen 1.23.4b. It keeps vertical tabs, workspaces, split
 ## Download
 
 - **Linux x86_64** — available now, with the DevTools frontend and launcher included.
-- **macOS** — native build required; not in the current release.
+- **macOS Apple Silicon** — available now as an unsigned DMG, with the DevTools frontend bundled.
 - **Windows** — native/cross build required; not in the current release.
 
 The website selects the right asset from the latest release: [chill-browser/www](https://github.com/chill-browser/www).
@@ -29,8 +29,16 @@ The website selects the right asset from the latest release: [chill-browser/www]
 npm ci
 npm run download
 npm run import
+npm run bootstrap
+bash scripts/download-language-packs.sh
 npm run build
 npm run package
+```
+
+On macOS, build in release mode for Apple Silicon:
+
+```bash
+SURFER_PLATFORM=darwin SURFER_COMPAT=aarch64 ZEN_RELEASE=1 ZEN_GA_DISABLE_PGO=1 npm run build
 ```
 
 The browser is based on Zen and Firefox. The Chrome DevTools frontend is served locally by `scripts/serve_chrome_devtools.mjs`.
