@@ -16,6 +16,16 @@ const host = "127.0.0.1";
 
 const chillShim = `
 (() => {
+  const setFrontendTheme = () => {
+    const value = JSON.stringify("dark");
+    for (const key of ["ui-theme", "__custom__ui-theme", "__bundled__ui-theme"]) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {}
+    }
+  };
+  setFrontendTheme();
+
   const DEVICE_MODE_SETTING = "emulation.show-device-mode";
 
   const installFrontendThemeBackground = () => {
