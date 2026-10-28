@@ -3616,21 +3616,9 @@ class Bridge {
   }
 
   #equivalentNode(node) {
-    const attributes = (node.attributes || [])
-      .map(attribute => `${attribute.name}=${attribute.value}`)
-      .join("\u0000");
-    for (const candidate of this.#nodeFrontById.values()) {
-      if (
-        candidate.nodeType === node.nodeType &&
-        candidate.nodeName === node.nodeName &&
-        (candidate.attributes || [])
-          .map(attribute => `${attribute.name}=${attribute.value}`)
-          .join("\u0000") === attributes
-      ) {
-        return candidate;
-      }
-    }
-    return null;
+    const actor = node.actorID || node.actor;
+    const nodeId = this.#nodeIdByActor.get(actor);
+    return nodeId ? this.#nodeFrontById.get(nodeId) || null : null;
   }
 
   #buildScopeChain(environment, thisValue) {
