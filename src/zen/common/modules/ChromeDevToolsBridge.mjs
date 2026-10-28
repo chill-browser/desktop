@@ -110,6 +110,7 @@ class Bridge {
   #domHighlighter;
   #nodeIdByActor = new Map();
   #nodeFrontById = new Map();
+  #sentNodeIds = new Set();
   #nextNodeId = 1;
   #domChildrenLoaded = new Set();
   #cssRuleBySheetId = new Map();
@@ -3750,6 +3751,7 @@ class Bridge {
     this.#domHighlighter = null;
     this.#nodeIdByActor.clear();
     this.#nodeFrontById.clear();
+    this.#sentNodeIds.clear();
     this.#domChildrenLoaded.clear();
     this.#nextNodeId = 1;
   }
@@ -3784,6 +3786,40 @@ class Bridge {
       throw new Error(`Unknown nodeId: ${nodeId}`);
     }
     return node;
+  }
+
+  async #ensureNodeInFrontend(nodeFront) {
+    const nodeId = this.#getNodeId(nodeFront);
+    if (this.#sentNodeIds.has(nodeId)) {
+      return nodeId;
+    }
+    const parent = nodeFront.parentNode?.() || nodeFront._parent || null;
+    if (!parent) {
+      return nodeId;
+    }
+    const parentId = await this.#ensureNodeInFrontend(parent);
+    const built = await this.#buildNode(nodeFront, parentId, 0, 0, {
+      remaining: 1,
+    });
+    if (!built) {
+      return nodeId;
+    }
+    this.#sentNodeIds.add(nodeId);
+    this.#sendEvent("DOM.setChildNodes", {
+      parentId,
+      nodes: [built],
+    });
+    return nodeId;
+  }
+
+  #markTreeSent(node) {
+    if (!node) {
+      return;
+    }
+    this.#sentNodeIds.add(node.nodeId);
+    for (const child of node.children || []) {
+      this.#markTreeSent(child);
+    }
   }
 
   #attributesArray(nodeFront) {
@@ -3874,20 +3910,22 @@ class Bridge {
     }
     if (!this.#pickerAttached) {
       this.#pickerAttached = true;
-      this.#domWalker.on("picker-node-hovered", ({ node }) => {
+      this.#domWalker.on("picker-node-hovered", async ({ node }) => {
         const equivalent = this.#equivalentNode(node) || node;
+        const nodeId = await this.#ensureNodeInFrontend(equivalent);
         this.#showNodeHighlight(equivalent).catch(e =>
           log("picker highlight failed", e?.message || e)
         );
         this.#sendEvent("Overlay.nodeHighlightRequested", {
-          nodeId: this.#getNodeId(equivalent),
+          nodeId,
         });
       });
-      this.#domWalker.on("picker-node-picked", ({ node }) => {
+      this.#domWalker.on("picker-node-picked", async ({ node }) => {
         const equivalent = this.#equivalentNode(node) || node;
+        const nodeId = await this.#ensureNodeInFrontend(equivalent);
         this.#hideNodeHighlight().catch(() => {});
         this.#sendEvent("Overlay.inspectNodeRequested", {
-          backendNodeId: this.#getNodeId(equivalent),
+          backendNodeId: nodeId,
         });
       });
       this.#domWalker.on("picker-node-canceled", () => {
@@ -3937,8 +3975,10 @@ class Bridge {
         const depth = Number.isFinite(params.depth) ? params.depth : -1;
         const maxDepth = depth < 0 ? 100 : depth;
         const budget = { remaining: 3000 };
+        const built = await this.#buildNode(root, null, 0, maxDepth, budget);
+        this.#markTreeSent(built);
         return {
-          root: await this.#buildNode(root, null, 0, maxDepth, budget),
+          root: built,
         };
       } catch (e) {
         lastError = e;
@@ -3979,6 +4019,9 @@ class Bridge {
       children.push(childNode);
     }
     this.#domChildrenLoaded.add(params.nodeId);
+    for (const child of children) {
+      this.#markTreeSent(child);
+    }
     this.#sendEvent("DOM.setChildNodes", {
       parentId: params.nodeId,
       nodes: children,

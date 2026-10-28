@@ -180,6 +180,13 @@ export class nsZenThemePicker extends nsZenMultiWindowFeature {
 
   handleDarkModeChange() {
     this.#nativeAccentColorCache = null;
+    const scheme = this.windowSchemeType;
+    Services.prefs.setIntPref("browser.theme.toolbar-theme", scheme);
+    Services.prefs.setIntPref("browser.theme.content-theme", scheme);
+    Services.prefs.setIntPref(
+      "layout.css.prefers-color-scheme.content-override",
+      scheme
+    );
     this.updateCurrentWorkspace();
     Services.obs.notifyObservers(null, "zen-theme-change");
   }

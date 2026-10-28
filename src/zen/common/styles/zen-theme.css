@@ -367,22 +367,3 @@
 
 %include squircle-exclusions.inc.css
 }
-
-:root {
-  --zen-branding-paper: #e7d9b4;
-  --zen-branding-dark: #092b5a;
-  --zen-main-browser-background: #e7d9b4;
-  --zen-main-browser-background-toolbar: #e7d9b4;
-  --zen-colors-primary: #78a890;
-  --zen-colors-secondary: #9ed1b7;
-  --zen-colors-tertiary: #e7d9b4;
-  --zen-colors-hover-bg: #9ed1b7;
-  --zen-colors-primary-foreground: #092b5a;
-  --zen-colors-border: color-mix(in srgb, #78a890 55%, transparent);
-  --zen-colors-input-bg: #f1e7c9;
-  --zen-urlbar-background: #f1e7c9;
-  --zen-dialog-background: #f1e7c9;
-  --toolbox-textcolor: #092b5a !important;
-  --toolbar-color: #092b5a !important;
-  color-scheme: light;
-}
